@@ -1,0 +1,64 @@
+resource "azurerm_kubernetes_cluster" "k8s" {
+  name                = var.cluster_info.name
+  location            = azurerm_resource_group.k8s.location
+  dns_prefix          = var.cluster_info.dns_prefix
+  resource_group_name = azurerm_resource_group.k8s.name
+  kubernetes_version  = var.kubernetes_version
+
+  role_based_access_control {
+    enabled = ! local.aks_aad_skip_rbac
+    dynamic "azure_active_directory" {
+      for_each = "${! local.aks_aad_skip_rbac ? list(local.aks_rbac_setting) : []}"
+      content {
+        client_app_id     = local.aks_rbac_setting.client_app_id
+        server_app_id     = local.aks_rbac_setting.server_app_id
+        server_app_secret = local.aks_rbac_setting.server_app_secret
+        tenant_id         = local.aks_rbac_setting.tenant_id
+      }
+    }
+  }
+
+  default_node_pool {
+    name               = var.agent_pool.name
+    node_count         = var.agent_pool.count
+    vm_size            = "Standard_DS2_v2"
+    type               = "VirtualMachineScaleSets"
+    os_disk_size_gb    = 30
+    max_pods           = 30
+    availability_zones = local.sanitized_availability_zones
+
+    enable_auto_scaling= true
+    min_count = 3
+    max_count = 12
+  }
+
+  service_principal {
+    client_id     = var.aks_login.client_id
+    client_secret = var.aks_login.client_secret
+  }
+
+  addon_profile {
+    oms_agent {
+      enabled                    = true
+      log_analytics_workspace_id = azurerm_log_analytics_workspace.k8s_logs.id
+    }
+  }
+
+  tags = {
+    CreatedBy   = var.tags.created_by != "" ? var.tags.created_by : null
+    ChangedBy   = var.tags.changed_by != "" ? var.tags.changed_by : null
+    Environment = var.tags.environment != "" ? var.tags.environment : null
+  }
+
+  lifecycle {
+    ignore_changes = [
+      role_based_access_control, 
+      role_based_access_control["azure_active_directory"],
+      agent_pool_profile.0.count]
+  }
+
+  network_profile {
+    network_plugin    = "azure"
+    load_balancer_sku = var.aks_load_balancer_sku
+  }
+}
