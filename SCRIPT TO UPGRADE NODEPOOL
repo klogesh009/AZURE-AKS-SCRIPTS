@@ -32,11 +32,15 @@ az aks nodepool show --cluster-name master-cluster --resource-group 1-d0641874-p
 
 
 
+
 To Upgrade control plane only:-
 --------------------------------------
 az aks upgrade --resource-group 1-d0641874-playground-sandbox  --name master-cluster --kubernetes-version 1.23.8 --control-plane-only
 
 
+
+
+Script to upgrade nodepool on AKS:-
 ----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 CLUSTER_NAME='master-cluster'
