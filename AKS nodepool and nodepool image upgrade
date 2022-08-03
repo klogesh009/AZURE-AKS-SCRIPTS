@@ -37,6 +37,12 @@ az aks nodepool upgrade \
    --no-wait --kubernetes-version KubernetesVersion
 
 
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
 ## Nodepool image upgrade 
 
 Running the following command lists all the current nodeimage versions of the  nodepool 
