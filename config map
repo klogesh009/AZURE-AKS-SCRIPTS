@@ -1,0 +1,67 @@
+apiVersion: v1
+data:
+  puglife.server: |
+    idx1-az1-splunk-prod.corpuk.net:53 {
+        errors
+        cache 30
+        forward . 172.29.168.36  # this is my test/dev DNS server
+    }
+    idx2-az1-splunk-prod.corpuk.net:53 {
+        errors
+        cache 30
+        forward . 172.29.168.36  # this is my test/dev DNS server
+    }
+    idx3-az2-splunk-prod.corpuk.net:53 {
+        errors
+        cache 30
+        forward . 172.29.168.36  # this is my test/dev DNS server
+    }
+    idx4-az2-splunk-prod.corpuk.net:53 {
+        errors
+        cache 30
+        forward . 172.29.168.36  # this is my test/dev DNS server
+    }
+    idx5-az3-splunk-prod.corpuk.net:53 {
+        errors
+        cache 30
+        forward . 172.29.168.36  # this is my test/dev DNS server
+    }
+    idx6-az3-splunk-prod.corpuk.net:53 {
+        errors
+        cache 30
+        forward . 172.29.168.36  # this is my test/dev DNS server
+    }
+    idx7-az1-splunk-prod.corpuk.net:53 {
+        errors
+        cache 30
+        forward . 172.29.168.36  # this is my test/dev DNS server
+    }
+    idx8-az2-splunk-prod.corpuk.net:53 {
+        errors
+        cache 30
+        forward . 172.29.168.36  # this is my test/dev DNS server
+    }
+    idx9-az3-splunk-prod.corpuk.net:53 {
+        errors
+        cache 30
+        forward . 172.29.168.36  # this is my test/dev DNS server
+    }
+    ds-az1-splunk-prod.corpuk.net:53 {
+        errors
+        cache 30
+        forward . 172.29.168.36  # this is my test/dev DNS server
+    }
+kind: ConfigMap
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","data":{"puglife.server":"idx1-az1-splunk-prod.corpuk.net:53 {\n    errors\n    cache 30\n    forward . 172.29.168.36  # this is my test/dev DNS server\n}\nidx2-az1-splunk-prod.corpuk.net:53 {\n    errors\n    cache 30\n    forward . 172.29.168.36  # this is my test/dev DNS server\n}\nidx3-az2-splunk-prod.corpuk.net:53 {\n    errors\n    cache 30\n    forward . 172.29.168.36  # this is my test/dev DNS server\n}\nidx4-az2-splunk-prod.corpuk.net:53 {\n    errors\n    cache 30\n    forward . 172.29.168.36  # this is my test/dev DNS server\n}\nidx5-az3-splunk-prod.corpuk.net:53 {\n    errors\n    cache 30\n    forward . 172.29.168.36  # this is my test/dev DNS server\n}\nidx6-az3-splunk-prod.corpuk.net:53 {\n    errors\n    cache 30\n    forward . 172.29.168.36  # this is my test/dev DNS server\n}\nidx7-az1-splunk-prod.corpuk.net:53 {\n    errors\n    cache 30\n    forward . 172.29.168.36  # this is my test/dev DNS server\n}\nidx8-az2-splunk-prod.corpuk.net:53 {\n    errors\n    cache 30\n    forward . 172.29.168.36  # this is my test/dev DNS server\n}\nidx9-az3-splunk-prod.corpuk.net:53 {\n    errors\n    cache 30\n    forward . 172.29.168.36  # this is my test/dev DNS server\n}\nds-az1-splunk-prod.corpuk.net:53 {\n    errors\n    cache 30\n    forward . 172.29.168.36  # this is my test/dev DNS server\n}\n"},"kind":"ConfigMap","metadata":{"annotations":{},"name":"coredns-custom","namespace":"kube-system"}}
+  creationTimestamp: "2022-07-18T11:35:20Z"
+  labels:
+    addonmanager.kubernetes.io/mode: EnsureExists
+    k8s-app: kube-dns
+    kubernetes.io/cluster-service: "true"
+  name: coredns-custom
+  namespace: kube-system
+  resourceVersion: "28257059"
+  uid: f8db83f5-8df1-414c-9469-20b96036c3dd
