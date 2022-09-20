@@ -146,6 +146,13 @@ RBSITVNETRG01
 az aks get-credentials --resource-group "AM-RB-NPL-AKS-ARG01"  --name "rbnplifakskaa01" --admin
 ##################
 
+-----------------------------------------------------------------------
+certification - unable to connect to the server x509
+------------
+az aks rotate-certs -g $RESOURCE_GROUP_NAME -n $CLUSTER_NAME
+
+----------------------------------------------------------------
+
 To make it as system node.
 
 az aks nodepool update --cluster-name rbsibittmykaa01 --name rbsibittmyn5 --resource-group "AM-RB-SITB-IT-TMY-RG01" --mode System
