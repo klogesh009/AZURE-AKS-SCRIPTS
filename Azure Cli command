@@ -1,0 +1,42 @@
+az aks create --name <<cluster_name>> --resource-group <<rg_name>> --admin-username cloudinfraadmin --ssh-key-value F:\Infra\Scripts\AKS\id_rsa.pub --kubernetes-version 1.15.10 --node-count <<>> --location <<>> --docker-bridge-address 152.17.0.1/16 --node-osdisk-size <<>> --node-vm-size <<Size of the VM>> --nodepool-name <<ScaleSet name>> --vnet-subnet-id <<resourceid of subnet>> --client-secret ILrvVHeNGi7dJRkzUwcCNsd8znsLL2HQirPWX9fE89Y= --service-principal 07b85059-fa29-486a-aece-200b938724c2 --node-zones 1 2 --aad-client-app-id '21db791d-88c5-49e1-a546-61a9125e208d' --aad-server-app-id 'aa129391-7a4a-4918-964d-64d51c60f359' --aad-server-app-secret Jv5ULk0P2Hx4M9j4TnV5LkdxSWZHbggNVYQVNcFPVgU= --aad-tenant-id 'a095b75b-77a2-4e28-afc2-27edd1d6b0ab' --enable-rbac --tags PROJECT=REBUS APPLICATION_CODE=<<>> OWNER=<<>> ENVIRONMENT=<<>> COSTCENTERID=NA APPLICATION="<<>>"
+
+linux:
+Without Autoscale and without AAD:
+az aks create --name <<cluster_name>> --resource-group <<rg_name>> --admin-username cloudinfraadmin --ssh-key-value /home/cloudinfraadmin/infra/id_rsa.pub --kubernetes-version 1.15.10 --node-count <<>> --location <<>> --docker-bridge-address 152.17.0.1/16 --node-osdisk-size <<>> --node-vm-size <<Size of the VM>> --nodepool-name <<ScaleSet name>> --vnet-subnet-id <<resourceid of subnet>> --client-secret ILrvVHeNGi7dJRkzUwcCNsd8znsLL2HQirPWX9fE89Y= --service-principal '07b85059-fa29-486a-aece-200b938724c2' --zones 1 2 --aad-client-app-id '21db791d-88c5-49e1-a546-61a9125e208d' --aad-server-app-id 'aa129391-7a4a-4918-964d-64d51c60f359' --aad-server-app-secret Jv5ULk0P2Hx4M9j4TnV5LkdxSWZHbggNVYQVNcFPVgU= --aad-tenant-id 'a095b75b-77a2-4e28-afc2-27edd1d6b0ab' --enable-rbac --tags PROJECT=REBUS APPLICATION_CODE=<<>> OWNER=<<>> ENVIRONMENT=<<>> COSTCENTERID=NA APPLICATION="<<>>"
+
+(Recommended)Without Autoscale and With managed AAD:
+az aks create --name <<cluster_name>> --resource-group <<rg_name>> --admin-username cloudinfraadmin --ssh-key-value F:\Infra\Scripts\AKS\id_rsa.pub --kubernetes-version 1.20.7 --node-count <<>> --location <<>> --docker-bridge-address 152.17.0.1/16 --node-osdisk-size 64 --node-vm-size <<Size of the VM>> --nodepool-name <<ScaleSet name>> --network-plugin kubenet --vnet-subnet-id <<resourceid of subnet>> --client-secret ILrvVHeNGi7dJRkzUwcCNsd8znsLL2HQirPWX9fE89Y= --service-principal 07b85059-fa29-486a-aece-200b938724c2 --zones 1 2 --enable-aad --aad-admin-group-object-ids <id-1,id-2> --aad-tenant-id a095b75b-77a2-4e28-afc2-27edd1d6b0ab --tags PROJECT=REBUS APPLICATION_CODE=<<>> OWNER=<<>> ENVIRONMENT=<<>> COSTCENTERID=NA APPLICATION="<<>>"
+
+
+--aad-admin-group-object-ids
+Integration: 43b23033-9796-4720-867e-dfc4e976c7d8,0b5eb79b-27fd-4fee-a77e-afa842950b11
+channels: c28ca8c0-ac46-4f2d-b910-982ab30bdf56,cf08eee5-02bd-4204-8443-4bbc57ec8cc6
+
+For sit-B,Production:
+--uptime-sla
+
+Example:
+
+
+az aks create --name rbnphifakskaa02 --resource-group DU-RB-NPH-IF-AKS-RG01 --admin-username cloudinfraadmin --ssh-key-value /home/cloudinfraadmin/id_rsa.pub --kubernetes-version 1.16.10 --node-count 1 --location northeurope --docker-bridge-address 152.17.0.1/16 --node-osdisk-size 32 --node-vm-size Standard_B2s --nodepool-name rbnphifaksn1 --vnet-subnet-id '/subscriptions/061336d1-0feb-40ed-8df3-f456532d8f76/resourceGroups/DU-RB-NPH-RA-APPS-RG01/providers/Microsoft.Network/virtualNetworks/DU-RB-NPH-RA-APPS-VNET01/subnets/DU-RB-NPH-RA-INTAKS-SNET01' --client-secret ILrvVHeNGi7dJRkzUwcCNsd8znsLL2HQirPWX9fE89Y= --service-principal 07b85059-fa29-486a-aece-200b938724c2 --zones 1 2 --aad-client-app-id 21db791d-88c5-49e1-a546-61a9125e208d --aad-server-app-id aa129391-7a4a-4918-964d-64d51c60f359 --aad-server-app-secret Jv5ULk0P2Hx4M9j4TnV5LkdxSWZHbggNVYQVNcFPVgU= --aad-tenant-id a095b75b-77a2-4e28-afc2-27edd1d6b0ab --enable-rbac --tags PROJECT=REBUS APPLICATION_CODE=AKS OWNER=INFRASTRUCTURE ENVIRONMENT="SIT-B DR" COSTCENTERID=NA APPLICATION="CAAS - Non Production Higher Application Tier"
+
+
+$pscredential = Get-Credential
+login-AzAccount -TenantId "a095b75b-77a2-4e28-afc2-27edd1d6b0ab"
+Select-AzSubscription -Subscription "REBUS_COMPONENT_TEST"
+
+
+Creation of AKS cluster using AV Zone
+*************************************
+az aks create --name rbsibittaskaa01 --resource-group AM-RB-SITB-IT-TAS-RG01 --admin-username cloudinfraadmin --ssh-key-value /home/cloudinfraadmin/id_rsa.pub --kubernetes-version 1.15.10 --node-count 5 --location westeurope --node-osdisk-size 128 --node-vm-size Standard_B4ms --nodepool-name rbsibittask1 --vnet-subnet-id '/subscriptions/061336d1-0feb-40ed-8df3-f456532d8f76/resourceGroups/AM-RB-SITB-RA-VNET-RG02/providers/Microsoft.Network/virtualNetworks/AM-RB-SITB-RA-VNET02/subnets/AM-RB-SITB-RA-INTACS-SNET09' --client-secret ILrvVHeNGi7dJRkzUwcCNsd8znsLL2HQirPWX9fE89Y= --service-principal '07b85059-fa29-486a-aece-200b938724c2' --zones 1 2 --aad-client-app-id '21db791d-88c5-49e1-a546-61a9125e208d' --aad-server-app-id 'aa129391-7a4a-4918-964d-64d51c60f359' --aad-server-app-secret Jv5ULk0P2Hx4M9j4TnV5LkdxSWZHbggNVYQVNcFPVgU= --aad-tenant-id 'a095b75b-77a2-4e28-afc2-27edd1d6b0ab' --enable-rbac --tags PROJECT=REBUS APPLICATION_CODE=TAS OWNER=INTEGRATION ENVIRONMENT=SIT-B COSTCENTERID=NA APPLICATION="TIBCO ActiveSpaces"
+
+
+az aks create --name rbcibittaskaa01  --resource-group AM-RB-CITB-IT-TAS-RG01 --admin-username cloudinfraadmin --ssh-key-value /home/cloudinfraadmin/id_rsa.pub --kubernetes-version 1.15.10 --node-count 3 --location westeurope --node-osdisk-size 128 --node-vm-size Standard_B4ms --nodepool-name rbcibittask1 --vnet-subnet-id '/subscriptions/bb0e8459-10cf-416c-bba0-fb4840437d48/resourceGroups/AM-RB-CITB-RA-APPS-RG02/providers/Microsoft.Network/virtualNetworks/AM-RB-CITB-RA-APPS-VNET02/subnets/AM-RB-CITB-RA-INTAKS-SNET05' --client-secret ILrvVHeNGi7dJRkzUwcCNsd8znsLL2HQirPWX9fE89Y= --service-principal '07b85059-fa29-486a-aece-200b938724c2' --zones 1 2 --aad-client-app-id '21db791d-88c5-49e1-a546-61a9125e208d' --aad-server-app-id 'aa129391-7a4a-4918-964d-64d51c60f359' --aad-server-app-secret Jv5ULk0P2Hx4M9j4TnV5LkdxSWZHbggNVYQVNcFPVgU= --aad-tenant-id 'a095b75b-77a2-4e28-afc2-27edd1d6b0ab' --enable-rbac --tags PROJECT=REBUS APPLICATION_CODE=TAS OWNER=INTEGRATION ENVIRONMENT=CIT-B COSTCENTERID=NA APPLICATION="TIBCO ActiveSpaces"
+
+
+
+
+
+
+
+
