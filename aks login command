@@ -1,0 +1,215 @@
+proxy IP and setting :
+
+172.17.0.12
+443
+
+--------------------------------------------------
+Citrix login
+
+https://mva.three.co.uk/
+
+lkumaresan
+
+Spain#1234
+
+-------------------------------------------------------------------------------------
+
+Corp ID is for production & Rebus is for non prod
+
+
+Corp ID
+
+lkumaresan
+
+lkumaresan@corpuk.net   --production access
+
+Spain#1234
+
+----------------------------------------------------------------------------
+Rebus ID
+
+lkumaresan
+
+lkumaresan@rebuscloud.co.uk  - dev access
+
+R#gEYSD&*&Hx
+
+To access rebus RDP console
+
+rebuscloud\lkumaresan
+
+10.10.105.18
+
+10.10.105.6
+
+
+Azure portal url
+
+lkumaresan@corpuk.net
+
+---------------------------------------------------------------------------------------
+Cyberack login - login to jumpoff to login- infra security 
+
+https://secure.3gateway.net/PasswordVault/v10
+
+cyulkumaresan
+
+Change@123456
+
+------------------------------------------------------------------------------------
+
+Share point access for linux servers
+
+\\amrbprxsssmbrg01diag.file.core.windows.net\smbprodpoc 
+UserName: amrbprxsssmbrg01diag
+
+4JMepHbOwk9P9Cpywf4dpcjturRmYJK5WH9/g+jt2RgBh343JUlZc/O0YV0ni2rBo+1YM6p6yvqITXYC4JcrXQ==
+
+
+10.10.105.18 - jump host
+
+-------------------------------------------------------
+production server url
+
+https://welcome.3gateway.net/RDWeb/Pages/en-US/Default.aspx
+
+https://welcome.3gateway.net/RDWeb/pages/en-US/Default.aspx
+
+
+------------------------------------------------------------------------
+Login Procedure:
+----------------
+################
+---------------- 
+
+Step 1: >> az login  
+Login with your corpuk.net id 
+Step 2: >>az account set --subscription REBUS_COMPONENT_TEST
+          az account set --subscription REBUS_PRODUCTION
+		  az account set --subscription REBUS_SIT-B_TEST
+		  az account set --subscription REBUS_PRE-PRODUCTION
+		  az account set --subscription REBUS_DEVELOPMENT
+		  az account set --subscription REBUS_TEST
+                  az account set --subscription REBUS_UAT
+		  az account set --subscription REBUS_MAYA_CEM_POC
+		  
+		  az vm list-vm-resize-options --resource-group AM-RB-SITB-CO-ODM-RG01 --name rbsibcoodmold01-vm --output table
+
+AM-RB-PRDX-IT-TBW-RG02_rbprxittbwkaa01_westeurope
+login to production subscription 
+Step 3: >>c
+		  
+		  az aks get-credentials --resource-group "AM-RB-CITA-RA-APPS-RG01" --name "rbciaittaskaa01"  --admin
+		  az aks get-credentials --resource-group "DU-RB-NPH-IF-AKS-RG01" --name "rbnphifakskaa02" --admin 
+		  az aks get-credentials --resource-group "AM-RB-PRDX-IT-TAS-RG01" --name "rbprxittaskaa01" --admin
+		  az aks get-credentials --resource-group "AM-RB-SITB-IT-TAS-RG01" --name "rbsibittaskaa01" --admin
+		  az aks get-credentials --resource-group "AM-RB-NPL-AKS-WRG01" --name "rbnplifakskaw01" --admin
+                  az aks get-credentials --resource-group "AM-RB-NPL-AKS-ARG01" --name "rbnplifakskaa01" --admin
+		  az aks get-credentials --resource-group "AM-RB-SIB-IT-TBW-ARG02" --name "rbsibittbwkaa06" --admin
+		   az aks get-credentials --resource-group "AM-RB-SIB-IT-FTL-ARG01" --name "rbsibitftlkaa01" --admin
+		   az aks get-credentials --resource-group "AM-RB-PRDX-IT-TMY-RG02" --name "rbprxittmykaa03" --admin
+		   az aks get-credentials --resource-group "AM-RB-CITB-IT-TAS-RG01" --name "rbcibittaskaa01"  --admin
+		   az aks get-credentials --resource-group "DU-RB-SITB-IT-TAS-RG01" --name "rbsibittaskaa03" --admin
+		   az aks get-credentials --resource-group "DU-RB-PRDX-IT-TAS-RG01" --name "rbprxittaskaa03" --admin
+		   az aks get-credentials --resource-group "AM-RB-PRDX-IT-TMY-RG02" --name "rbprxittmykaa03" --admin
+		   az aks get-credentials --resource-group "AM-RB-SITB-IT-TMY-RG01" --name "rbsibittmykaa06" --admin
+		   az aks get-credentials --resource-group "AM-RB-SITB-IT-TMY-RG01" --name "rbsibittmykaa06" --admin
+		   az aks get-credentials --resource-group "AM-RB-CITB-IT-TMY-RG02" --name "rbcibittmykaa01" --admin
+		   az aks get-credentials --resource-group "AM-RB-CITB-IT-TMY-RG02" --name "rbcibittmykaa02" --admin
+		   az aks get-credentials --resource-group "AM-RB-DEVA-IT-TBW-RG02" --name "rbdeaittbwkaa01" --admin
+		   az aks get-credentials --resource-group "DU-RB-SITA-IT-TMY-RG01" --name "rbsiaittmykaa02" --admin
+		   az aks get-credentials --resource-group "AM-SITB-IT-MAS-RG01" --name "rbsibittmyaks01" --admin
+		   az aks get-credentials --resource-group "AM-SITB-IT-MAS-RG01" --name "rbsibittmyaks02" --admin
+		   az aks get-credentials --resource-group "AM-RB-SITB-IT-TMY-RG01" --name "rbsibittmykaa06" --admin
+		   az aks get-credentials --resource-group "AM-RB-SITB-IT-TMY-RG01" --name "rbsibittmykaa07" --admin
+		   az aks get-credentials --resource-group "AM-RB-SITB-IT-TMY-RG01" --name "rbsibittmykaa08" --admin
+		   az aks get-credentials --resource-group  "AM-RB-PPDX-IT-TMY-RG01" --name "rbppxittmykaa02" --admin
+		   az aks get-credentials --resource-group  "AM-RB-PPDX-IT-TMY-RG01" --name "rbppxittmykaa03" --admin
+		   az aks get-credentials --resource-group  "RBSITVNETRG01" --name "rbsiaittaskaa01" --admin
+		   --overwrite-existing
+                   az aks get-credentials --resource-group "DU-RB-SIA-IT-FTL-ARG01" --name "rbsiaitftlkaa01" --admin
+                   az aks get-credentials --resource-group "DU-RB-PPDX-IT-TMY-RG01" --name "rbppxittmykaa03" --admin
+                   az aks get-credentials --resource-group "AM-RB-UATA-IT-TMY-RG01" --name "rbuaaittmykaa02" --admin
+                   az aks get-credentials --resource-group "AM-RB-SITA-IT-TMY-RG01" --name "rbsiaittmykaa01" --admin
+                   az aks get-credentials --resource-group "AM-RB-SITB-IT-TMY-RG01" --name "rbsibittmykaa01" --admin                                   
+		   az aks get-credentials --resource-group "DU-RB-SIA-IT-TBW-ARG01" --name "rbsiaittbwkaa02" --admin
+		   az aks get-credentials --resource-group "DU-MY-DEA-CE-CTS-RG01" --name mydeacectskaa01 --admin
+		   az aks get-credentials --resource-group "AM-RB-PRX-IT-FTL-RG02" --name rbprxitftlkaa01 --admin
+		   az aks get-credentials --resource-group "AM-RB-PRDX-IT-TMY-RG02" --name rbprxittmykaa01 --admin
+		   az aks get-credentials --resource-group "AM-RB-DEVA-RA-APPS-RG02" --name rbdeaittaskaa01 --admin
+REBUS_TEST
+DU-MY-DEA-CE-CTS-RG01
+RBSITVNETRG01
+ az aks get-credentials --resource-group  "RBSITVNETRG01" --name "rbsiaittaskaa01" --admin
+
+
+az aks get-credentials --resource-group "AM-RB-NPL-AKS-ARG01"  --name "rbnplifakskaa01" --admin
+##################
+
+To make it as system node.
+
+az aks nodepool update --cluster-name rbsibittmykaa01 --name rbsibittmyn5 --resource-group "AM-RB-SITB-IT-TMY-RG01" --mode System
+
+################################
+
+ClusterName can be any one of them from the above list 
+Step 4 : >> kubectl get nodes
+Step 5: >> kubectl get pods -n kube-system
+
+#kubectl describe pod_name -n kube-system
+Eg kubectl describe pods azure-ip-masq-agent-5gkr5 -n kube-system
+
+kubectl logs pods azure-ip-masq-agent-5gkr5 -n kube-system
+
+This will generate link and code which has to entered in browser to authenticate to cluster. 
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+how to create namespace :
+
+kubectl get namespace --> to check the namespace detials.
+
+kubectl create namespace <namespacename>
+
+eg: kubectl create namespace it-ftl-sitb
+
+kubectl create namespace it-tmy-sitx
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#kubectl get pods -o wide --all-namespaces
+
+#kubectl get pvc,pv
+
+#kubectl descibe pod <pod name>
+
+#kubectl get pvc,pv -n=tas-prdx-datagrid(Pod Name)
+
+#kubectl exec -ti -c ml-tm ml-master-569877b848-62dr6 bash
+COREDNS Commands
+****************
+#kubectl get configmaps
+
+#kubectl get configmaps -n kube-system
+
+#kubectl get configmap coredns-custom -o yaml -n kube-system
+kubectl get configmap coredns-custom -n kube-system
+
+#docker ps
+#docker logs <container ID>
+#docker login rbprxittmyacr01.azurecr.io -u rbprxittmyacr01 -p s1MXi1hWi2X+uVNe5DN/B7t98fXx9fut
+#docker pull rbdrxittasacr01.azurecr.io/rbdrxittasacr01/tibco/as/as-tibdgadmind:4.4.0
+
+For user access into the cluster
+********************************
+Please delete the .azure and .kube folders in your user folder and then try logging in to the cluster.
+
+#kubectl get nodes
+#kubectl get pods  -n kube-system
+
+-----------------------------------------------------------------------
+certification - unable to connect to the server x509
+------------
+az aks rotate-certs -g $RESOURCE_GROUP_NAME -n $CLUSTER_NAME
+
+
+
