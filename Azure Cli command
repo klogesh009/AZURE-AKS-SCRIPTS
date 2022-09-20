@@ -34,7 +34,12 @@ az aks create --name rbsibittaskaa01 --resource-group AM-RB-SITB-IT-TAS-RG01 --a
 az aks create --name rbcibittaskaa01  --resource-group AM-RB-CITB-IT-TAS-RG01 --admin-username cloudinfraadmin --ssh-key-value /home/cloudinfraadmin/id_rsa.pub --kubernetes-version 1.15.10 --node-count 3 --location westeurope --node-osdisk-size 128 --node-vm-size Standard_B4ms --nodepool-name rbcibittask1 --vnet-subnet-id '/subscriptions/bb0e8459-10cf-416c-bba0-fb4840437d48/resourceGroups/AM-RB-CITB-RA-APPS-RG02/providers/Microsoft.Network/virtualNetworks/AM-RB-CITB-RA-APPS-VNET02/subnets/AM-RB-CITB-RA-INTAKS-SNET05' --client-secret ILrvVHeNGi7dJRkzUwcCNsd8znsLL2HQirPWX9fE89Y= --service-principal '07b85059-fa29-486a-aece-200b938724c2' --zones 1 2 --aad-client-app-id '21db791d-88c5-49e1-a546-61a9125e208d' --aad-server-app-id 'aa129391-7a4a-4918-964d-64d51c60f359' --aad-server-app-secret Jv5ULk0P2Hx4M9j4TnV5LkdxSWZHbggNVYQVNcFPVgU= --aad-tenant-id 'a095b75b-77a2-4e28-afc2-27edd1d6b0ab' --enable-rbac --tags PROJECT=REBUS APPLICATION_CODE=TAS OWNER=INTEGRATION ENVIRONMENT=CIT-B COSTCENTERID=NA APPLICATION="TIBCO ActiveSpaces"
 
 
+############################################
 
+
+kubectl get rolebindings,clusterrolebindings \
+--all-namespaces  \
+-o custom-columns='KIND:kind,NAMESPACE:metadata.namespace,NAME:metadata.name,SERVICE_ACCOUNTS:subjects[?(@.kind=="ServiceAccount")].name'
 
 
 
