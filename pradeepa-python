@@ -1,0 +1,479 @@
+# Designing of the lapse & agent model
+1. Predit the lapse to highest accuracy
+2. Find the main features impacting the lapse
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+### 1. Data loading and EDA
+
+# X_File - Data file, Y_file - Result file,
+# Make_df - Training set Merging function , Make_df1 - Testing set Merging function 
+
+def make_df(year1, year2):
+    x_file = 'data_'+str(year1)+'_decile(1,10)_AUG2019_JUL2020_INDV.csv'
+    y_file = 'result_'+str(year2)+'_AUG2020_JUL2021_INDV_Active.csv'
+    df_x = pd.read_csv(x_file)
+    df_y = pd.read_csv(y_file)[['Person_ID', 'active_mbr']]
+    df = pd.merge(left = df_x.drop('active_mbr',axis=1), right=df_y, on='Person_ID')
+    return df
+
+def make_df1(year1, year2):
+    x_file = 'data_'+str(year1)+'_decile(1,10)_AUG2020_JUL2021_INDV.csv'
+    y_file = 'result_'+str(year2)+'_AUG2021_JUL2022_INDV_Active.csv'
+    df_x = pd.read_csv(x_file)
+    df_y = pd.read_csv(y_file)[['Person_ID', 'active_mbr']]
+    df = pd.merge(left = df_x.drop('active_mbr',axis=1), right=df_y, on='Person_ID')
+    return df
+
+X = pd.concat([make_df(2020,2021)]).reset_index(drop=True)
+X.tail()
+
+X.to_csv('Traning set 2019-2020_INDV_(1-10)_Active.csv',index=False)
+
+X.columns
+
+X.shape
+
+# Dropping the variables from Training data
+
+X=X.drop(['EmpEYKey', 'Person_ID','Sub_ID','decile_PostRA','LOB','Conditions_OL','AgentName', 'Agent_id','decile_PostRA_OL','Lapse_Cal','Lapse_Sep','Returning_OEP','Next_OEP_Label','allowed','Exchange','Prem_Subsidy', 'Subsidy_Indicator','Inpatient_pvt','RateAge_pvt','GRP_Male_Band', 'Grp_HML_Band', 'Grp_Age_Band','hmlValue','Product','Metal','Lapse_Mbr'],axis=1)
+
+# Testing Data set
+
+df_validate = make_df1(2021, 2022)
+
+df_validate.shape
+
+df_validate=df_validate.drop_duplicates(subset=['Person_ID'], keep='last') 
+
+df_validate=df_validate.sort_values('EmpEYKey',ascending=False)
+
+df_validate.head()
+
+df_validate.shape
+
+X.active_mbr.value_counts()
+
+df_validate.active_mbr.value_counts()
+
+df_validate.EmpEYKey.value_counts()
+
+df_validate.to_csv("Testing 2022 indv 1-10_distinct.csv",index=False)
+
+df_validate=pd.read_csv('Testing 2022 indv 1-10_distinct.csv')
+
+Actual_2021=df_validate
+
+# Dropping the variables from Testing dataset
+
+df_validate=df_validate.drop(['EmpEYKey', 'Person_ID','Sub_ID','decile_PostRA_OL','decile_PostRA','LOB','AgentName','Agent_id','Conditions_OL','Lapse_Cal','Lapse_Sep','Returning_OEP','Next_OEP_Label','allowed','Exchange','Prem_Subsidy', 'Subsidy_Indicator','Inpatient_pvt','RateAge_pvt','GRP_Male_Band', 'Grp_HML_Band', 'Grp_Age_Band','hmlValue','Product','Metal','Lapse_Mbr'],axis=1)
+df_validate.tail()
+
+# Check for Missing values Testing 
+
+null_cols = [col for col in df_validate.columns if df_validate[col].isna().any()]
+null_cols
+
+df_validate[null_cols].isna().sum()
+
+# Missing values Treatement for Testing set
+
+df_validate['sub_age'].fillna(method='bfill', inplace=True)
+df_validate['family_status'].fillna(method='bfill', inplace=True)
+df_validate['Region_Product'].fillna(method='bfill', inplace=True)
+#df_validate['Remain_EOP'].fillna(method='bfill', inplace=True)
+#df_validate['Shopper_Value'].fillna(method='bfill', inplace=True)
+
+null_cols = [col for col in df_validate.columns if df_validate[col].isna().any()]
+null_cols
+
+df_validate.active_mbr.value_counts()
+
+print (X.shape, df_validate.shape)
+
+set(X.columns)-set(df_validate.columns)
+
+set(df_validate.columns)-set(X.columns)
+
+# Dropping few more variables from Training and Testing set
+
+df_validate=df_validate.drop(['Rownumber', 'exp_year'],axis=1)
+
+
+X=X.drop(['Rownumber', 'exp_year'],axis=1)
+
+set(df_validate.columns)-set(X.columns)
+
+print (X.shape, df_validate.shape)
+
+---
+
+null_cols = [col for col in X.columns if X[col].isna().any()]
+null_cols
+
+X[null_cols].isna().sum()
+
+# Missing value treatement for Training set
+
+X['Region_Product'].fillna(method='bfill', inplace=True)
+X['sub_age'].fillna(method='bfill', inplace=True)
+X['family_status'].fillna(method='bfill', inplace=True)
+#X['Riskscore_OL'].fillna(method='bfill', inplace=True)
+#X['Remain_EOP'].fillna(method='bfill', inplace=True)
+#X['Shopper_Value'].fillna(method='bfill', inplace=True)
+
+X[null_cols].isna().sum()
+
+X.columns
+
+# Splitting the Training data into Categorical and Numerical variables
+
+df=X.copy()
+
+cat_cols=[]
+#If any column has less than or equll to 10 unique values, it will be considered as a categorical columns
+
+for col in df.columns:
+    if df[col].unique().size <= 10:
+        cat_cols.append(col)
+print(cat_cols)
+
+# Identifying Numerical columns
+
+num_cols = list(set(list(df.columns)) - set(list(cat_cols)))
+print (num_cols)
+
+# Converting the Categorical values to numerical values
+
+get_dummies function will generate new columns based on the values present in each colum for eg: Gender column will split into Gender_M and Gender_F
+
+df_dummies = pd.get_dummies(df[cat_cols], drop_first=True)
+df_dummies.shape
+
+df_dummies.tail()
+
+
+
+df[num_cols].tail()
+
+# Performing Skewness
+
+convert numerical data to distribute normally between +5 and -5
+
+df[num_cols].skew()
+
+# Keeping a note of the columns with high skewness
+#skewed_cols = ['Riskscore_OL', 'paid_rx', 'paid_med','Margin_PreRA_Pooled_OL','Paid_claims']
+
+skewed_cols = ['Riskscore_OL', 'paid_rx', 'paid_med','Paid_claims','Margin_POSTRA_Pooled','Margin_PreRA_Pooled_OL']
+
+def fix_skew_cuberoot(rec):
+    if rec==0 or type(rec)==type("s"):
+        return  0
+    else:
+        return (np.log(np.abs(rec) ** (1./3.)) * np.sign(rec) )
+
+for col in skewed_cols:
+    df[col+'_noskew'] = df[col].apply(fix_skew_cuberoot)
+    print (col+'_noskew', df[col+'_noskew'].skew())
+    num_cols.remove(col)
+    num_cols.append(col+'_noskew')
+
+
+# Performing Scalling function
+
+from sklearn.preprocessing import StandardScaler
+
+num_cols
+
+def transform_decline1_2data(df):
+    x = df.copy()
+    #x.Product.fillna('Unknown', inplace=True)
+    #x.dropna(inplace=True)
+    #x.reset_index(drop=True, inplace=True)
+    
+    cat_cols=[]
+    for col in x.columns:
+        if x[col].unique().size <= 10:
+            cat_cols.append(col)
+    
+    num_cols = list(set(list(x.columns)) - set(list(cat_cols)))
+    #num_cols.remove('Paid_claims')
+    skewed_cols = ['Riskscore_OL', 'paid_rx', 'paid_med','Paid_claims','Margin_POSTRA_Pooled','Margin_PreRA_Pooled_OL']
+    
+    for col in skewed_cols:
+        print (col)
+        x[col+'_noskew'] = x[col].apply(fix_skew_cuberoot)
+        num_cols.remove(col)
+        num_cols.append(col+'_noskew')
+    
+    df_dummies = pd.get_dummies(x[cat_cols], drop_first=True)
+    return (x[num_cols], df_dummies)
+
+# Scaling converts the Numeric column values into different bucket range
+
+scaler = StandardScaler().fit(df[num_cols])
+
+train_scaled = pd.DataFrame(scaler.transform(df[num_cols]))
+train_scaled.columns = num_cols
+train_scaled.tail()
+
+train_scaled.shape
+
+print (train_scaled.skew())
+
+df_test_num, df_test_dummies = transform_decline1_2data(df_validate)
+
+print (df_test_num.shape, df_test_dummies.shape)
+
+# Finding difference in columns both Training and Testing data
+
+set(df_dummies.columns) - set(df_test_dummies.columns)
+
+#df_test_dummies=df_test_dummies.drop(['Region_Product_UP'],axis=1)
+
+df_test_dummies['Region_Product_UP'] = 0
+#df_test_dummies['Product_Off-Marketplace'] = 0
+#df_test_dummies['Product_RxPlus'] = 0
+#df_test_dummies['Shopper_Value_Loss      '] = 0
+#df_test_dummies['active_mbr_Y'] = 1
+
+set(df_test_dummies.columns) - set(df_dummies.columns)
+
+#df_dummies['Product_Copay +'] = 0
+#df_dummies['Product_HSA'] = 0
+df_dummies['Region_Product_Oth'] = 0
+df_dummies['Region_Product_UP'] = 0
+
+#df_dummies=df_dummies.drop(['Region_Product_Oth'],axis=1)
+
+set(df_dummies.columns) - set(df_test_dummies.columns)
+
+sorted(list(df_dummies.columns)) == sorted(list(df_test_dummies.columns))
+
+To precheck scalling is performed or not in testing dataset numeric columns
+
+
+df_test_num.head()
+
+df_test_dummies.head()
+
+# Splitting the data to X_test and y_test (Testing data) 
+
+# To perform scalling in testing dataset numerical column
+df_test_num_scaled = pd.DataFrame(scaler.transform(df_test_num))
+df_test_num_scaled.columns = num_cols
+# To concat both numerical and catgorical column in testing dataset
+X_test = pd.concat([df_test_num_scaled, df_test_dummies.drop('active_mbr_Y', axis=1)], axis=1)
+X_test.tail()
+
+y_test = df_test_dummies.active_mbr_Y
+
+
+y_test.value_counts()
+
+# Splitting the data into X and y (Training data)
+
+X = pd.concat([train_scaled, df_dummies], axis=1)
+y = X.active_mbr_Y
+X.drop('active_mbr_Y', axis=1, inplace=True)
+X.tail()
+
+print (X_test.shape, X.shape)
+
+# Data Balancing (Training Data)
+
+from sklearn.utils import resample
+
+df = pd.concat([X, y], axis=1)
+df.shape
+
+df_majority = df[df.active_mbr_Y==1]
+df_minority = df[df.active_mbr_Y==0]
+df_minority.shape
+
+df_majority.shape
+
+sample=df_majority.shape
+
+
+sample=sample[0]
+print(p2)
+
+TO balance the minority data equating to majority data
+
+df_minority_upsampled = resample(df_minority, replace=True, 
+                                 n_samples=sample, random_state=44)
+
+df_upsampled = pd.concat([df_majority, df_minority_upsampled])
+df_upsampled.active_mbr_Y.value_counts()
+
+X_train = df_upsampled.drop('active_mbr_Y', axis=1)
+y_train = df_upsampled.active_mbr_Y
+
+
+y_train.value_counts()
+
+# Building the Model using Random Forest Algorithm
+
+from sklearn.ensemble import RandomForestClassifier
+rf = RandomForestClassifier()
+from sklearn import metrics
+from sklearn.metrics import confusion_matrix
+
+rf_model = rf.fit(X_train, y_train)
+
+y_pred_rf=rf_model.predict(X_test)
+
+y_test.value_counts()
+
+pd.Series(y_pred_rf).value_counts()
+
+# Prediction using Predict_proba function (this function can be used when prediction does not give us good lapse numbers)
+
+# To convert lapse value 0 to float numbers using Predict_proba
+#y_temp = pd.Series(rf_model.predict_proba(X_test)[:, 0])
+#print(y_temp)
+
+y_temp = pd.Series(rf_model.predict_proba(X_test)[:, 0])
+y_pred_rf = y_temp.apply(lambda x: 0 if x>0.3 else 1)
+y_pred_rf.value_counts()
+
+# Run Random forest algorithm again if any of the score are not above 60% and run below codes again
+
+print (metrics.precision_score(y_test, y_pred_rf, pos_label=0))
+
+print (metrics.accuracy_score(y_test, y_pred_rf))
+
+print (metrics.recall_score(y_test, y_pred_rf, pos_label=0))
+
+print (metrics.classification_report(y_test, y_pred_rf))
+
+Actual_2021['Prediction_2022']=y_pred_rf
+
+Actual_2021['Prediction_2022'] = Actual_2021['Prediction_2022'].map({1: 'Y', 0: 'N'})
+
+Actual_2021['Prediction_2022'] = Actual_2021['Prediction_2022'].map({'N': 1, 'Y': 0})
+
+Actual_2021.to_csv('Prediction_2022_lapse_INDV_decile(1-10)_Active.csv',index=False)
+
+---
+
+# Future Prediction for Decile (1-10)
+
+df_2021=pd.read_csv('data_2022_decile(1,10)_AUG2021_JUL2022_INDV.csv')
+
+df_2021=df_2021.drop_duplicates(subset=['Person_ID'], keep='last')
+
+df_2021=df_2021.sort_values('EmpEYKey',ascending=False)
+
+Actual_2021=df_2021
+
+Actual_2021.shape
+
+Actual_2021.head()
+
+df_2021.active_mbr.value_counts()
+
+df_2021=df_2021.drop(['EmpEYKey', 'Person_ID','Sub_ID','decile_PostRA_OL','decile_PostRA','LOB','AgentName','Agent_id','Conditions_OL','Lapse_Cal','Lapse_Sep','Returning_OEP','Next_OEP_Label','allowed','Exchange','Prem_Subsidy', 'Subsidy_Indicator','Inpatient_pvt','RateAge_pvt','GRP_Male_Band', 'Grp_HML_Band', 'Grp_Age_Band','hmlValue','Product','Metal','Lapse_Mbr'], axis=1)
+
+null_cols = [col for col in df_2021.columns if df_2021[col].isna().any()]
+null_cols
+
+df_2021[null_cols].isna().sum()
+
+#df_2020.Product.fillna('Unknown', inplace=True)
+#df_2020.Product.unique()
+
+df_2021['sub_age'].fillna(method='bfill', inplace=True)
+df_2021['family_status'].fillna(method='bfill', inplace=True)
+df_2021['Region_Product'].fillna(method='bfill', inplace=True)
+#df_2021['Remain_EOP'].fillna(method='bfill', inplace=True)
+#df_2021['Shopper_Value'].fillna(method='bfill', inplace=True)
+
+null_cols = [col for col in df_2021.columns if df_2021[col].isna().any()]
+null_cols
+
+df_2021=df_2021.drop([ 'Rownumber', 'exp_year'],axis=1)
+
+df=df_2021.copy()
+
+cat_cols=[]
+for col in df.columns:
+    if df[col].unique().size <= 10:
+        cat_cols.append(col)
+
+num_cols = list(set(list(df.columns)) - set(list(cat_cols)))
+
+df_dummies = pd.get_dummies(df[cat_cols], drop_first=True)
+
+skewed_cols = ['Riskscore_OL', 'paid_rx', 'paid_med','Paid_claims','Margin_POSTRA_Pooled','Margin_PreRA_Pooled_OL']
+
+
+def fix_skew_cuberoot(rec):
+    if rec==0 or type(rec)==type("s"):
+        return  0
+    else:
+        return (np.log(np.abs(rec) ** (1./3.)) * np.sign(rec) )
+
+for col in skewed_cols:
+    df[col+'_noskew'] = df[col].apply(fix_skew_cuberoot)
+    print (col+'_noskew', df[col+'_noskew'].skew())
+    num_cols.remove(col)
+    num_cols.append(col+'_noskew')
+
+from sklearn.preprocessing import StandardScaler
+scaler = StandardScaler().fit(df[num_cols])
+test_scaled = pd.DataFrame(scaler.transform(df[num_cols]))
+test_scaled.columns = num_cols
+#df_dummies['Region_Product_UP'] = 0
+
+X_test = pd.concat([test_scaled, df_dummies], axis=1)
+
+X_test.shape
+
+print(X_train.shape, X_test.shape)
+
+print(set(X_test.columns)-set(X_train.columns))
+
+#X_train['Margin_PreRA_Pooled_OL_noskew'] = 0
+#X_train['Region_Product_UP'] = 0
+X_train['Region_Product_Oth'] = 0
+
+print(set(X_train.columns)-set(X_test.columns))
+
+#X_train['Region_Product_Oth'] = 0
+X_test['Region_Product_UP'] = 0
+#X_test['Shopper_Value_Hold      '] = 0
+
+print(X_train.shape, X_test.shape)
+
+# Building model using Random Forest
+
+from sklearn import metrics
+from sklearn.ensemble import RandomForestClassifier
+rf=RandomForestClassifier()
+
+model_rf=rf.fit(X_train,y_train)
+
+pred=model_rf.predict(X_test)
+
+pd.Series(pred).value_counts()
+
+#if prediction score is achieved no need to run below predict_proba function
+
+y_temp = pd.Series(model_rf.predict_proba(X_test)[:, 0])
+y_pred = y_temp.apply(lambda x: 0 if x>0.35 else 1)
+
+ pd.Series(y_pred).value_counts()
+
+Actual_2021['Prediction_2023']=pred
+
+Actual_2021['Prediction_2023'] = Actual_2021['Prediction_2023'].map({1: 'Y', 0: 'N'})
+Actual_2021['Prediction_2023'] = Actual_2021['Prediction_2023'].map({'N': 1, 'Y': 0})
+
+Actual_2021.to_csv('Future_Prediction_2023_lapse_INDV_decile(1-10).csv',index=False)
+
